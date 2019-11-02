@@ -40,3 +40,4 @@ Used material and tutorials:
 - https://github.com/cfenollosa/os-tutorial
 - http://www.cs.bham.ac.uk/~exr/lectures/opsys/10_11/lectures/os-dev.pdf
 - https://wiki.osdev.org/Main_Page
+- [good overview of registers](https://wiki.skullsecurity.org/Registers)
