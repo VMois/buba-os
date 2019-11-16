@@ -1,6 +1,11 @@
+#include "../drivers/screen.h"
+
 void main() {
-    char* video_memory = (char*) 0xb8000;
-    *video_memory = 'B';
-    video_memory+= 2;
-    *video_memory = 'u';
+    clear_screen();
+    kprint("  BubaOS is here... to do nothing... yet");
+    for (int i = 0; i < 25; i++) {
+        char str[255];
+        int_to_ascii(i, str);
+        kprint_at(str, 0, i);
+    }
 }
