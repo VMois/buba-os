@@ -1,5 +1,7 @@
 # Buba OS
 
+![not very impressive screenshot](main.png)
+
 The simple OS is written from scratch in Assembly and C. Project for "Basic of programming 1" course at Budapest University of Technology and Economics (BME).
 
 ## Table of Contents
@@ -29,6 +31,16 @@ The shell will have a few simple commands that are able to print on the screen o
 <a name="dev"/>
 
 ## Development
+
+Instructions are only for Linux OS.
+
+### How to run (for users)
+
+1. You need to have `qemu` installed on your system.
+2. Download `os-image.bin` file from the release page.
+3. In console, run `qemu-system-i386 -fda os-image.bin`.
+
+### How to run (for development)
 
 In progress...
 
