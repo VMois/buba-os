@@ -1,11 +1,13 @@
 #include "../drivers/screen.h"
+#include "util.h"
+#include "../cpu/isr.h"
+#include "../cpu/idt.h"
 
 void main() {
+    isr_install();
     clear_screen();
     kprint("  BubaOS is here... to do nothing... yet");
-    for (int i = 0; i < 25; i++) {
-        char str[255];
-        int_to_ascii(i, str);
-        kprint_at(str, 0, i);
-    }
+     /* Test the interrupts */
+    __asm__ __volatile__("int $2");
+    __asm__ __volatile__("int $3");
 }
