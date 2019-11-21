@@ -39,6 +39,14 @@ int strlen(char s[]) {
     return i;
 }
 
+void strcopy(char *dst, char *src) {
+    int len = strlen(src);
+    for (int i = 0; i < len; i++) {
+        dst[i] = src[i];
+    }
+    dst[len] = '\0';
+}
+
 void append(char s[], char n) {
     int len = strlen(s);
     s[len] = n;

@@ -28,7 +28,7 @@ void kprint_at(char *message, int col, int row) {
 
     /* Loop through message and print it */
     int i = 0;
-    while (message[i] != 0) {
+    while (message[i] != '\0') {
         offset = print_char(message[i++], col, row, WHITE_ON_BLACK);
         /* Compute row/col for next iteration */
         row = get_offset_row(offset);
