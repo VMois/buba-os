@@ -1,8 +1,4 @@
-void memory_copy(char *source, char *dest, int nbytes) {
-    for (int i = 0; i < nbytes; i++) {
-        *(dest + i) = *(source + i);
-    }
-}
+#include "string.h"
 
 // TODO: ugly function code, find a better way
 void int_to_ascii(int n, char str[]) {
@@ -37,15 +33,28 @@ void int_to_ascii(int n, char str[]) {
     str[digit_count + 1] = '\0';
 }
 
-// Example of the function found on the internet, but not fully ready
-// void int_to_ascii(int n, char str[]) {
-//     int i, sign;
-//     if ((sign = n) < 0) n = -n;
-//     i = 0;
-//     do {
-//         str[i++] = n % 10 + '0';
-//     } while ((n /= 10) > 0);
-//     if (sign < 0) str[i++] = '-';
-//     str[i] = '\0';
-//     /* TODO: implement "reverse" */
-// }
+int strlen(char s[]) {
+    int i = 0;
+    while (s[i] != '\0') ++i;
+    return i;
+}
+
+void append(char s[], char n) {
+    int len = strlen(s);
+    s[len] = n;
+    s[len+1] = '\0';
+}
+
+void backspace(char s[]) {
+    int len = strlen(s);
+    s[len-1] = '\0';
+}
+
+/* BoP pointers and strings presentation */
+int strcmp(char *s1, char *s2) {
+    while (*s1 != '\0' && *s1 == *s2) {
+        s1++;
+        s2++;
+    }
+    return *s1 - *s2;
+}

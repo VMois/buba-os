@@ -1,13 +1,23 @@
-#include "../drivers/screen.h"
-#include "util.h"
 #include "../cpu/isr.h"
-#include "../cpu/idt.h"
+#include "../cpu/timer.h"
+#include "../drivers/screen.h"
+#include "../libc/string.h"
 
 void main() {
     isr_install();
+    irq_install();
     clear_screen();
-    kprint("  BubaOS is here... to do nothing... yet");
-     /* Test the interrupts */
-    __asm__ __volatile__("int $2");
-    __asm__ __volatile__("int $3");
+
+    kprint("Kernel input\n"
+           "Type DIE to halt the CPU \n >");
+}
+
+void user_input(char *input) {
+    if (strcmp(input, "DIE") == 0) {
+        kprint("Stopping the CPU. Bye!\n");
+        asm volatile("hlt");
+    }
+    kprint("You said: ");
+    kprint(input);
+    kprint("\n> ");
 }
