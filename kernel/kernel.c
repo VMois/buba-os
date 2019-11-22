@@ -2,22 +2,23 @@
 #include "../cpu/timer.h"
 #include "../drivers/screen.h"
 #include "../libc/string.h"
+#include "../libc/mem.h"
 
 void main() {
     isr_install();
     irq_install();
     clear_screen();
 
-    kprint("Kernel input\n"
-           "Type DIE to halt the CPU \n >");
+    kprint("Ready for input\n"
+           "Type DIE to halt the CPU \n"
+           "> "
+    );
 }
 
 void user_input(char *input) {
     if (strcmp(input, "DIE") == 0) {
-        kprint("Stopping the CPU. Bye!\n");
+        kprint("Stopping the CPU\n");
         asm volatile("hlt");
     }
-    kprint("You said: ");
-    kprint(input);
-    kprint("\n> ");
+    kprint("\n > ");
 }
