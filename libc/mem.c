@@ -13,16 +13,33 @@ void memory_set(u8 *dest, u8 val, u32 len) {
     for ( ; len != 0; len--) *temp++ = val;
 }
 
-// head of linkedlist
+/*
+Dynamic Memory Allocation (DMA) code below.
+
+For now, the code is smarter than just growing pointer 
+but still far from good dynamic allocation.
+Instead of reusing memory sectors it will be more practical to remove them and
+later in linked list detect available memory spaces and fill them with new sectors.
+*/
+
+/*
+Private functions and variables
+*/
+
+// start of available memory, head of the linked list
 u32 free_mem_addr = 0x10000;
 
-typedef struct memory_sector {
-    struct memory_sector *next;
+// pre-defined numbers of bytes to allocate
+// 0x200(h) = 512(d) bytes
+u32 PAGE_SIZE = 0x200;
+
+// memory sector (MEM_SEC)
+typedef struct MEM_SEC {
+    struct MEM_SEC *next;
     u32 is_used;
     u32 pages;
 } MEM_SEC;
 
-u32 PAGE_SIZE = 0x1000;
 u32 calculate_pages_num(u32 size) {
     u32 pages_num = size / PAGE_SIZE;
     if ((size % PAGE_SIZE) > 0)
@@ -30,7 +47,9 @@ u32 calculate_pages_num(u32 size) {
     return pages_num;
 }
 
-MEM_SEC *find_empty_slot(u32 pages_num) {
+// find if any defined before MEM_SEC is not used 
+// and if it has enough pages to use
+MEM_SEC *find_free_sector(u32 pages_num) {
     MEM_SEC *p = (MEM_SEC*) free_mem_addr;
     while (p != NULL) {
         if (p->is_used == 0 && p->pages >= pages_num)
@@ -40,20 +59,31 @@ MEM_SEC *find_empty_slot(u32 pages_num) {
     return NULL;
 }
 
-MEM_SEC *find_last_slot() {
+MEM_SEC *insert_sector(u32 pages) {
     MEM_SEC *p = (MEM_SEC*) free_mem_addr;
-    while (p != NULL)
-        if (p->next == NULL)
-            return p;
+    while (p != NULL) {
+        if (p->next == NULL) {
+            u32 new_addr = (u32) p + sizeof(MEM_SEC) + p->pages * PAGE_SIZE;
+            MEM_SEC *new_sector = (MEM_SEC*) new_addr;
+            new_sector->is_used = 1;
+            new_sector->pages = pages;
+            new_sector->next = NULL;
+
+            p->next = new_sector;
+            return new_sector;
+        }
+        p = p->next;
+    }
     return NULL;
 }
 
-void insert(u32 addr, u32 pages) {
-    MEM_SEC *new_slot = (MEM_SEC*) addr;
-    new_slot->is_used = 1;
-    new_slot->pages = pages;
-    new_slot->next = NULL;
+u32 calculate_memory_pointer(MEM_SEC *mem_sec) {
+    return (u32) mem_sec + (u32) sizeof(MEM_SEC); 
 }
+
+/*
+Public functions
+*/
 
 void free(void *addr) {
     MEM_SEC *p = (MEM_SEC*) free_mem_addr;
@@ -69,23 +99,21 @@ void free(void *addr) {
 u32 kmalloc(u32 size) {
     u32 pages_num = calculate_pages_num(size);
 
-    // it is a first time we allocate memory
+    // allocate memory for the first time in the whole system
     if (free_mem_addr == 0x10000) {
         free_mem_addr += 1;
         MEM_SEC *msec = (MEM_SEC*) free_mem_addr;
         msec->next = NULL;
         msec->is_used = 1;
         msec->pages = pages_num;
-        return (u32) msec + (u32) sizeof(MEM_SEC);
-    } else {
-        MEM_SEC *slot = find_empty_slot(pages_num);
-        if (slot == NULL) {
-            slot = find_last_slot();
-            u32 new_addr = (u32) slot + sizeof(MEM_SEC) + slot->pages * PAGE_SIZE;
-            insert(new_addr, pages_num);
-            return (u32) new_addr + (u32) sizeof(MEM_SEC) + (u32) pages_num * PAGE_SIZE;
-        }
-        slot->is_used = 1;
-        return (u32) slot + (u32) sizeof(MEM_SEC);
+        return calculate_memory_pointer(msec);
     }
+
+    MEM_SEC *sector = find_free_sector(pages_num);
+    if (sector != NULL) {
+        sector->is_used = 1;
+    } else {
+        sector = insert_sector(pages_num);
+    }
+    return calculate_memory_pointer(sector);
 }
