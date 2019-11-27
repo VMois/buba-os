@@ -28,7 +28,7 @@ load_kernel:
     call print_nl
 
     mov bx, KERNEL_OFFSET ; Read from disk and store in 0x1000
-    mov dh, 32 ; IMPORTANT! need to increase the number of sectors to read as your kernel growth in size.
+    mov dh, 48 ; IMPORTANT! need to increase the number of sectors to read as your kernel growth in size.
     mov dl, [BOOT_DRIVE]
     call disk_load
     ret

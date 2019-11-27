@@ -2,6 +2,7 @@
 #define STRINGS_H
 
 void int_to_ascii(int n, char str[]);
+void hex_to_ascii(int n, char str[]);
 int strlen(char s[]);
 void strcopy(char *dst, char *src);
 void backspace(char s[]);
