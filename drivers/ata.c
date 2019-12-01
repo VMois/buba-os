@@ -5,6 +5,7 @@
 #include "../libc/string.h"
 #include "../libc/mem.h"
 
+// Documentation source: https://wiki.osdev.org/ATA_PIO_Mode
 
 void ide_delay(int n)
 {
@@ -12,12 +13,14 @@ void ide_delay(int n)
 		port_byte_in(ATA_SECONDARY_DEVCTL);
 }
 
+// drive software reset
 void drive_reset() {
     port_byte_out(ATA_PRIMARY_DEVCTL, 0x04);
     ide_delay(4);
     port_byte_out(ATA_PRIMARY_DEVCTL, 0x00);
 }
 
+// chs to LBA
 u32 chs_to_lba(u32 cylinder, u32 head, u32 sector) {
     return (cylinder * 16 + head) * 63 + (sector - 1);
 }
@@ -96,25 +99,13 @@ uint8_t ata_write(uint32_t lba, uint8_t sector_num, uint16_t* data, uint8_t size
             continue;
         }
         // fill with zeros the rest
-        port_word_out(0x1F0, (uint16_t) 0x00);
+        port_word_out(ATA_PRIMARY_IO + ATA_REG_DATA, (uint16_t) 0x00);
     }
-    port_byte_out(0x1F7, (uint8_t) 0xE7); // cache flush
+    port_byte_out(ATA_PRIMARY_IO + ATA_REG_COMMAND, ATA_CMD_CACHE_FLUSH); // cache flush
     ata_poll();
     return 0;
 }
 
 void ata_init() {
     drive_reset();
-    uint32_t t = chs_to_lba(0, 0, 22);
-    uint16_t data[4] = {1, 2, 3, 4};
-    if(ata_write(t, 1, data, 4)) {
-        kprint("Write error");
-    }
-    uint16_t *tmp = ata_read(t, 1);
-    for (int i = 0; i < 16; i++) {
-        char* str = (char*) kmalloc(sizeof(char) * 5);
-        hex_to_ascii(tmp[i], str);
-        kprint(str);
-        kprint("\n");
-    }
 }

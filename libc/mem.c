@@ -18,7 +18,7 @@ Dynamic Memory Allocation (DMA) code below.
 
 For now, the code is smarter than just growing pointer 
 but still far from good dynamic allocation.
-Instead of reusing memory sectors it will be more practical to remove them and
+TODO: Instead of reusing memory sectors it will be more practical to remove them and
 later in linked list detect available memory spaces and fill them with new sectors.
 */
 

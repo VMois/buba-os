@@ -1,7 +1,7 @@
 #include "string.h"
 #include "../cpu/type.h"
 
-// TODO: ugly function code, find a better way
+// TODO: ugly function, find a better way
 void int_to_ascii(int n, char str[]) {
     int tmp = n;
     int digit_count = 0;
@@ -69,6 +69,7 @@ int strcmp(char *s1, char *s2) {
 }
 
 void hex_to_ascii(int n, char str[]) {
+    str[0] = '\0';
     append(str, '0');
     append(str, 'x');
     char zeros = 0;
@@ -86,4 +87,6 @@ void hex_to_ascii(int n, char str[]) {
     tmp = n & 0xF;
     if (tmp >= 0xA) append(str, tmp - 0xA + 'a');
     else append(str, tmp + '0');
+
+    append(str, '\0');
 }

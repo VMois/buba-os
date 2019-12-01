@@ -1,4 +1,6 @@
 // source of constants: https://wiki.osdev.org/IDE
+#ifndef ATA_H
+#define ATA_H
 
 #define ATA_PRIMARY_IO 0x1F0
 #define ATA_SECONDARY_IO 0x170
@@ -47,3 +49,5 @@
 #define ATA_REG_DEVADDRESS 0x0D
 
 void ata_init();
+
+#endif

@@ -2,54 +2,72 @@
 
 ![not very impressive screenshot](main.png)
 
-The simple OS is written from scratch in Assembly and C. Project for "Basic of programming 1" course at Budapest University of Technology and Economics (BME).
+The simple OS is written from scratch in Assembly and C for x86 architecture. Project for "Basic of programming 1" course at Budapest University of Technology and Economics (BME).
+
+The project is based on [os-tutorial](https://github.com/cfenollosa/os-tutorial) repo with some parts reworked and new added.
 
 ## Table of Contents
 
-[Goal](#goal)  
-[System structure](#structure)
+[Goal](#goal)
+[System features](#features)  
+[Project structure](#structure)
 [Development](#dev)  
 [Resources](#resources)
 
 ## Goal
 
 The goal is to learn how operating systems are working by making a simple OS.
-The development includes using Assembly and C programming languages, and concepts like boot sector, stack, interrupt, kernel. No advanced OS development techniques/tools are used, everything is built from scratch. The system is not indented for production use and it does not serve any other goal except educational.
+The development includes using Assembly and C programming languages, and concepts like boot sector, stack, interrupt, kernel, linked lists. No advanced OS development techniques/tools are used, everything is built from scratch. The system is not indented for production use and it does not serve any other goal except educational.
 
-<a name="structure"/>
+<a name="features"></a>
 
-## System structure and features
+## System features
 
-The system will be able to run using QEMU (virtual machine) or live USB stick. The system will consist of:
+The system is able to run using QEMU (or other virtual machine). The system consist of:
 
-- boot sector, written in Assembly
-- kernel + shell, written in C
-- simple filesystem (?)
+- boot sector (written in Assembly)
+- kernel with a simple shell, and dynamic memory allocation (written in C)
+- minimal keyboard and VGA screen drivers (written in C)
+- minimal ATA driver for reading and writing in PIO mode (written in C)
 
-The shell will have a few simple commands that are able to print on the screen or read user input.
+<a name="structure"></a>
 
-<a name="dev"/>
+## Project structure
+
+Root files structure:
+
+- `boot/` - Assembly code related to booting and loading kernel.
+- `cpu/` - x86 CPU architecture related code (ports, IRQ, ISR)
+- `drivers/`- screen, keyboard and ATA drivers
+- `kernel/` - kernel code
+- `libc/` - functions to work with strings, memory, etc.
+- `Makefile` - file with commands to compile and execute OS image using QEMU
+
+<a name="dev"></a>
 
 ## Development
 
-Instructions are only for Linux OS.
+### How to run
 
-### How to run (for users)
+1. Install `qemu` ([download page](https://www.qemu.org/download/)).
+2. Download `buba_os_[version].bin` file from the release page.
+3. In console, run `qemu-system-i386 -drive if=ide,format=raw,file=buba_os_[version].bin,readonly=off`.
 
-1. You need to have `qemu` installed on your system.
-2. Download `os-image.bin` file from the release page.
-3. In console, run `qemu-system-i386 -fda os-image.bin`.
+### How to setup development environment
 
-### How to run (for development)
+Follow [this](https://github.com/cfenollosa/os-tutorial/tree/master/00-environment) and after [this](https://github.com/cfenollosa/os-tutorial/tree/master/11-kernel-crosscompiler) tutorial to install necessary libraries.
 
-In progress...
+Commands:
+
+- `make run` - to compile and run.
+- `make debug` - to compile and run with GDB debugging.
 
 <a name="resources"/>
 
 ## Resources
 
 - https://github.com/cfenollosa/os-tutorial
+- https://wiki.osdev.org/
 - http://www.cs.bham.ac.uk/~exr/lectures/opsys/10_11/lectures/os-dev.pdf
-- https://wiki.osdev.org/Main_Page
 - [good overview of registers](https://wiki.skullsecurity.org/Registers)
 - [nice nasm tutorials](https://cs.lmu.edu/~ray/notes/nasmtutorial/)
