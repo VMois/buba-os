@@ -4,15 +4,15 @@
 
 The simple OS is written from scratch in Assembly and C for x86 architecture. Project for "Basic of programming 1" course at Budapest University of Technology and Economics (BME).
 
-The project is based on [os-tutorial](https://github.com/cfenollosa/os-tutorial) repo with some parts reworked and new added.
+Based on [os-tutorial](https://github.com/cfenollosa/os-tutorial) repo with some parts reworked and new added.
 
 ## Table of Contents
 
-[Goal](#goal)
-[System features](#features)  
-[Project structure](#structure)
-[Development](#dev)  
-[Resources](#resources)
+1. [Goal](#goal)
+2. [System features](#features)  
+3. [Project structure](#structure)
+4. [Development](#dev)  
+5. [Resources](#resources)
 
 ## Goal
 
@@ -26,9 +26,19 @@ The development includes using Assembly and C programming languages, and concept
 The system is able to run using QEMU (or other virtual machine). The system consist of:
 
 - boot sector (written in Assembly)
-- kernel with a simple shell, and dynamic memory allocation (written in C)
+- simple kernel, and dynamic memory allocation (written in C)
+- IRQs (written in Assembly and C)
 - minimal keyboard and VGA screen drivers (written in C)
-- minimal ATA driver for reading and writing in PIO mode (written in C)
+- simple shell (written in C)
+- minimal ATA driver for reading and writing from hard drive (written in C)
+
+### Dynamic memory allocation
+
+Dynamic memory allocation is implemented using linked list of memory sector (MEM_SEC) structs with default page size of 512B. Memory sectors could be reused or added. Two public functions are available in `libc/mem.c`: `kmalloc` and `free`.
+
+### ATA driver
+
+As the first part towards filesystem, simple ATA driver was created. All necessary information about ATA interface were taken from OSDev wiki [article](https://wiki.osdev.org/ATA_PIO_Mode). Currently, driver is working only with primary drive, it can read and write sectors in PIO mode.
 
 <a name="structure"></a>
 
@@ -50,8 +60,8 @@ Root files structure:
 ### How to run
 
 1. Install `qemu` ([download page](https://www.qemu.org/download/)).
-2. Download `buba_os_[version].bin` file from the release page.
-3. In console, run `qemu-system-i386 -drive if=ide,format=raw,file=buba_os_[version].bin,readonly=off`.
+2. Download `os-image.bin` file from the release page.
+3. In console, run `qemu-system-i386 -drive if=ide,format=raw,file=os-image.bin,readonly=off`.
 
 ### How to setup development environment
 
